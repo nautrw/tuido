@@ -13,6 +13,8 @@ def main():
     database.add_todo(connection, 9292, 1, "important done", 1)
     database.add_todo(connection, 7222, 0, "not important not done", 0)
     database.add_todo(connection, 7371, 1, "important not done", 0)
+    database.toggle_done(connection, 7222)
+    database.toggle_done(connection, 9292)
 
     todos_list = database.get_todos(connection)
     for todo in todos_list:

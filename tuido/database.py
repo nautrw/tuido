@@ -27,4 +27,22 @@ def get_todos(connection):
     return cursor.execute(
         "SELECT * FROM todos ORDER BY important DESC, done;"
     )  # it will automatically default to ASC
+
+
+def toggle_done(connection, id):
+    cursor = connection.cursor()
+
+    current_status = cursor.execute(
+        "SELECT done FROM todos WHERE id = ?", (id,)
+    ).fetchone()[0]
+    new_status = 0 if current_status == 1 else 1
+
+    cursor.execute(
+        """UPDATE todos
+           SET done = ?
+           WHERE id = ?""",
+        (new_status, id),
+    )
+
+    connection.commit()
     cursor.close()
