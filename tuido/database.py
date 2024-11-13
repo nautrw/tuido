@@ -3,20 +3,25 @@ import sqlite3
 
 def create_table(connection):
     cursor = connection.cursor()
+    # no boolean type in sqlite, so I will use
+    # 1 for true and 0 for false
     cursor.execute("""CREATE TABLE IF NOT EXISTS todos
-                      (task TEXT, done INTEGER)""")  # since there is no boolean datatype in sqlite3, use 1 for done and 0 for not done
+                      (id INT PRIMARY KEY, important INTEGER, task TEXT, done INTEGER)""")
 
     connection.commit()
 
 
-def add_todo(connection, task, done=0):
+def add_todo(connection, id, important, task, done):
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO todos VALUES (?, ?)", (task, done))
+    cursor.execute("INSERT INTO todos VALUES (?, ?, ?, ?)", (id, important, task, done))
 
     connection.commit()
 
 
 def get_todos(connection):
     cursor = connection.cursor()
-    # `ORDER BY done ASC` orders the todos from not done to done
-    return cursor.execute("SELECT task, done FROM todos ORDER BY done ASC")
+    # This will order them so that the important ones always come first,
+    # and the ones that are not done will also come first
+    return cursor.execute(
+        "SELECT * FROM todos ORDER BY important DESC, done;"
+    )  # it will automatically default to ASC
