@@ -9,6 +9,7 @@ def create_table(connection):
                       (id INT PRIMARY KEY, important INTEGER, task TEXT, done INTEGER)""")
 
     connection.commit()
+    cursor.close()
 
 
 def add_todo(connection, id, important, task, done):
@@ -16,6 +17,7 @@ def add_todo(connection, id, important, task, done):
     cursor.execute("INSERT INTO todos VALUES (?, ?, ?, ?)", (id, important, task, done))
 
     connection.commit()
+    cursor.close()
 
 
 def get_todos(connection):
@@ -25,3 +27,4 @@ def get_todos(connection):
     return cursor.execute(
         "SELECT * FROM todos ORDER BY important DESC, done;"
     )  # it will automatically default to ASC
+    cursor.close()
