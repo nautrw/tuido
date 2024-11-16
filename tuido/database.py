@@ -20,6 +20,14 @@ def add_todo(connection, id, important, task, done):
     cursor.close()
 
 
+def remove_todo(connection, id):
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM todos WHERE id = ?", (id,))
+
+    connection.commit()
+    cursor.close()
+
+
 def get_todos(connection):
     cursor = connection.cursor()
     # This will order them so that the important ones always come first,
@@ -40,6 +48,25 @@ def toggle_done(connection, id):
     cursor.execute(
         """UPDATE todos
            SET done = ?
+           WHERE id = ?""",
+        (new_status, id),
+    )
+
+    connection.commit()
+    cursor.close()
+
+
+def toggle_important(connection, id):
+    cursor = connection.cursor()
+
+    current_status = cursor.execute(
+        "SELECT important FROM todos WHERE id = ?", (id,)
+    ).fetchone()[0]
+    new_status = 0 if current_status == 1 else 1
+
+    cursor.execute(
+        """UPDATE todos
+           SET important = ?
            WHERE id = ?""",
         (new_status, id),
     )
