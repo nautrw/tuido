@@ -29,9 +29,16 @@ def get_todos(connection):
     cursor = connection.cursor()
     # This will order them so that the important ones always come first,
     # and the ones that are not done will also come first
-    return cursor.execute(
+    # return cursor.execute(
+    #     "SELECT * FROM todos ORDER BY important DESC, done;"
+    # ).fetchall()  # it will automatically default to ASC
+
+    todos = cursor.execute(
         "SELECT * FROM todos ORDER BY important DESC, done;"
-    )  # it will automatically default to ASC
+    ).fetchall()
+
+    cursor.close()
+    return todos
 
 
 def toggle_done(connection, id):

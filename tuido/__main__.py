@@ -13,13 +13,13 @@ def refresh(stdscr):
 
 def parse_todos(stdscr, connection):
     todos = database.get_todos(connection)
-    row = 1
+    y = 1
 
     for todo in todos:
         formatted_str = f"{'! ' if todo[1] == 1 else ''}{'X' if todo[3] == 0 else 'D'} {todo[0]}: {todo[2]}"
-        stdscr.addstr(1, row, formatted_str)
+        stdscr.addstr(y, 1, formatted_str)
 
-        row += 1
+        y += 1
 
 
 def main(stdscr):
