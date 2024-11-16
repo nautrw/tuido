@@ -1,26 +1,40 @@
+import curses
 import sqlite3
+from curses import wrapper
 
 import tuido.database as database
 
 DB_PATH = "database.db"
 
 
-def main():
+def refresh(stdscr):
+    stdscr.refresh()
+
+
+def parse_todos(stdscr, connection):
+    todos = database.get_todos(connection)
+    row = 1
+
+    for todo in todos:
+        formatted_str = f"{'! ' if todo[1] == 1 else ''}{'X' if todo[3] == 0 else 'D'} {todo[0]}: {todo[2]}"
+        stdscr.addstr(1, row, formatted_str)
+
+        row += 1
+
+
+def main(stdscr):
     connection = sqlite3.connect(DB_PATH)
 
-    database.create_table(connection)
-    database.add_todo(connection, 8289, 0, "not important done", 1)
-    database.add_todo(connection, 9292, 1, "important done", 1)
-    database.add_todo(connection, 7222, 0, "not important not done", 0)
-    database.add_todo(connection, 7371, 1, "important not done", 0)
-    database.toggle_done(connection, 7222)
-    database.toggle_done(connection, 9292)
+    stdscr.clear()
 
-    todos_list = database.get_todos(connection)
-    for todo in todos_list:
-        print(todo)
+    stdscr.border()
+
+    parse_todos(stdscr, connection)
+
+    refresh(stdscr)
+    stdscr.getch()
 
     connection.close()
 
 
-main()
+wrapper(main)
