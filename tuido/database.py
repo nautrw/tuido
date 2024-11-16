@@ -1,6 +1,3 @@
-import sqlite3
-
-
 def create_table(connection):
     cursor = connection.cursor()
     # no boolean type in sqlite, so I will use
